@@ -1,12 +1,14 @@
 """Download the core nflverse tables into data/raw/nflverse.
 
-Run with ``make pull-data`` or ``uv run python scripts/pull_nflverse.py --seasons 2011 2025``.
-Downloads are cached; pass ``--refresh`` to re-download.
+Run with ``make pull-data`` or ``uv run python scripts/pull_nflverse.py --seasons FIRST LAST``.
+The default range is 2011 (first market-model season) to the current NFL season. Downloads
+are cached; pass ``--refresh`` to re-download. The whole default pull is about 20 MB.
 """
 
 from __future__ import annotations
 
 import argparse
+import datetime
 import logging
 
 from ai_nfl_gm.config import get_settings
@@ -16,6 +18,12 @@ STATIC_TABLES = ["contracts", "players", "draft_picks", "combine", "trades"]
 PER_SEASON_TABLES = ["stats_player_reg"]
 
 
+def current_nfl_season(today: datetime.date | None = None) -> int:
+    """The NFL season year: it starts in September, so January to August belong to last year."""
+    today = today or datetime.date.today()
+    return today.year if today.month >= 9 else today.year - 1
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -23,7 +31,7 @@ def main() -> None:
         nargs=2,
         type=int,
         metavar=("FIRST", "LAST"),
-        default=(2011, 2025),
+        default=(2011, current_nfl_season()),
         help="inclusive season range for per-season tables",
     )
     parser.add_argument("--refresh", action="store_true", help="re-download cached files")
