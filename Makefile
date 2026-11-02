@@ -2,8 +2,8 @@
 .PHONY: help setup lint format test test-network check api pull-data check-cap-table hooks clean
 
 help:
-	@echo "make setup      install the package, all extras and dev tools into .venv"
-	@echo "make hooks      install the pre-commit hooks"
+	@echo "make setup      install the package, all extras and dev tools into .venv, plus the pre-commit hooks"
+	@echo "make hooks      (re)install the pre-commit hooks on their own"
 	@echo "make lint       ruff check + format check"
 	@echo "make format     ruff format + autofix"
 	@echo "make test       pytest (offline tests)"
@@ -15,6 +15,7 @@ help:
 
 setup:
 	uv sync --all-extras
+	uv run pre-commit install
 
 hooks:
 	uv run pre-commit install
