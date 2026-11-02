@@ -22,7 +22,7 @@ what it consumes and what it produces; column names follow the source data dicti
 | --- | --- | --- | --- |
 | 1. Data | `ai_nfl_gm.data` | nflverse parquet (contracts, players, draft picks, combine, stats); CFBD JSON | one row per contract-year (cap hits exploded); one clean player-season table per position; player-ID and position crosswalks |
 | 2. Market model | `ai_nfl_gm.market` | signings with prior-season production, age, position | predicted `apy_cap_pct` per signing; held-out error on the last two FA classes |
-| 3. Surplus | `ai_nfl_gm.valuation.aging`, `.surplus` | player-seasons, market model, remaining cap hits | projected seasons; surplus (% of cap) per player over controlled years |
+| 3. Surplus | `ai_nfl_gm.valuation.player_value`, `.aging`, `.surplus` | player-seasons, market model, remaining cap hits | composite player value per player-season (the production label); projected seasons; surplus (% of cap) per player over controlled years |
 | 4. Trade value | `ai_nfl_gm.valuation.draft_chart`, `.trade` | surplus of drafted players over rookie deals; rookie-scale cost | our draft chart (expected surplus by slot, with floor/ceiling); trade evaluation = sum per side |
 | 5. Prospects | `ai_nfl_gm.prospects` | CFBD stats, combine, recruiting, age; consensus slot | predicted NFL value and slot per prospect, over/underdrafted flags |
 | 6. Product | `ai_nfl_gm.api`, `web/` | outputs of 3, 4, 5 as tables | trade calculator and draft board |

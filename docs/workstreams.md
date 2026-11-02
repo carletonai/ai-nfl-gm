@@ -57,19 +57,21 @@ slot first, then look for where production disagrees with it. Keep an eye on Big
 
 ## Valuation engine
 
-**Builds:** aging curves, surplus value, draft-pick values from pick history, the trade ledger.
+**Builds:** the composite player-value label, aging curves, surplus value, draft-pick values from
+pick history, the trade ledger.
 
 **Week-4 milestone:** our own draft chart, checked against Fitzgerald-Spielberger and Jimmy
 Johnson.
 
-**Start here:** `src/ai_nfl_gm/valuation/` (`trade.py` has the trade arithmetic, `draft_chart.py`
-the published Jimmy Johnson table as a comparison; `aging.py`, `surplus.py` and the derived
-chart are the TODOs).
+**Start here:** `src/ai_nfl_gm/valuation/` (`player_value.py` fixes the composite-value interface
+and lists candidate inputs; `trade.py` has the trade arithmetic; `draft_chart.py` the published
+Jimmy Johnson table as a comparison; `aging.py`, `surplus.py` and the derived chart are the TODOs).
 
-**First tasks:** WR aging curve from player-seasons; surplus of drafted players over their
-rookie deal by slot (needs the market model or, as a stand-in, second-contract APY); group
-nearby picks and report floor/expected/ceiling; price the trades in nflverse `trades` and see
-whether the answers are defensible.
+**First tasks:** design the WR composite value from the candidate inputs in `player_value.py`
+and validate it against AV and second-contract APY; WR aging curve from player-seasons;
+surplus of drafted players over their rookie deal by slot (needs the market model or, as a
+stand-in, second-contract APY); group nearby picks and report floor/expected/ceiling; price
+the trades in nflverse `trades` and see whether the answers are defensible.
 
 **Good for:** statistics, modelling judgment.
 
@@ -90,8 +92,8 @@ team-context sliders and future-pick discount as inputs; later the draft board.
 
 ## Cross-cutting
 
-- **Target variable.** The FA price, the pick curve and the prospect projection all regress
-  onto one cross-position value measure. Decide it in week 1 and record it in
-  `docs/decisions/0002-target-variable.md`.
+- **Production label.** The pick curve, surplus and the prospect projection all regress onto
+  one cross-position value measure. Decision 0002: build our own composite from many metrics;
+  the Valuation workstream owns its construction (`valuation/player_value.py`).
 - **Position taxonomy.** Every raw label goes through the crosswalk in the sport config.
 - **Scope.** The WR pipeline shipping is the milestone, not "the framework".
