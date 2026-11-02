@@ -18,8 +18,8 @@ Conventional commits: `<type>(<scope>): <description>`, imperative, lowercase, n
 | `perf` | performance |
 | `ci` | CI changes |
 
-Scope is the package or workstream: `data`, `market`, `valuation`, `prospects`, `api`, `web`,
-`configs`, `docs`. Examples:
+Scope is the package or workstream: `data`, `market`, `valuation`, `prospects`, `product`,
+`api`, `web`, `configs`, `docs`. Examples:
 
 ```
 feat(data): explode per-year cap hits from contracts
@@ -28,13 +28,6 @@ docs(decisions): record the target-variable choice
 ```
 
 Do not add AI co-author trailers or override authorship with `--author`.
-
-## Branches and pull requests
-
-- Branch from `main`: `<stream>/<short-description>`.
-- Commit as you go and run `make check` before pushing.
-- CI runs ruff (lint and format) and pytest on Python 3.11 and 3.12. A red check blocks merge.
-- One approval from another member merges it. Squash-merge unless the history matters.
 
 ## Code style
 
@@ -47,7 +40,7 @@ Do not add AI co-author trailers or override authorship with `--author`.
 - Column names follow the source table (`apy_cap_pct`, `gsis_id`) so the data dictionary
   stays the documentation.
 - Unwritten functions raise `NotImplementedError` with a `TODO(<workstream>)` note saying
-  what belongs there; keep that habit so `grep -rn "TODO(" src/` stays the backlog.
+  what belongs there; keep that habit so `git grep -n "TODO(" src/` stays the backlog.
 
 ## Tests
 
@@ -57,6 +50,7 @@ Do not add AI co-author trailers or override authorship with `--author`.
   few rows of a real table under `tests/fixtures/` (keep them under a few KB).
 - A model PR reports its held-out metric in the description, using
   `ai_nfl_gm.market.evaluate` so numbers are comparable.
+- CI runs `make check` on Python 3.11 and 3.12; a red check blocks merge.
 
 ## Notebooks
 

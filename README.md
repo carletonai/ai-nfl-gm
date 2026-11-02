@@ -12,7 +12,8 @@ and where a college prospect should go in the draft. The result goes live on
 
 ## Setup
 
-You need Python 3.11+ and [uv](https://docs.astral.sh/uv/getting-started/installation/).
+You need [uv](https://docs.astral.sh/uv/getting-started/installation/); it fetches the right
+Python for you.
 
 ```bash
 git clone https://github.com/carletonai/ai-nfl-gm.git
@@ -22,9 +23,9 @@ make check   # lint + tests, the same as CI; if this passes you are ready
 ```
 
 Everything runs through `uv run`, so there is no virtualenv to activate. On Windows without
-`make`, open the `Makefile` and run the commands inside it directly.
+`make`, run `uv sync --all-extras`, `uv run pre-commit install` and `uv run pytest` instead.
 
-Then prove the data is real:
+Then prove the data is real (paste into `uv run python`):
 
 ```python
 from ai_nfl_gm.data import nflverse
@@ -40,7 +41,7 @@ what you want to learn and say so in `#ai-nfl-gm`.
 
 | Stream | You will build | Good if you like | Code |
 | --- | --- | --- | --- |
-| Data | clean per-position tables from nflverse and CFBD | pandas, data cleaning (best first stream) | `src/ai_nfl_gm/data/` |
+| Data | clean per-position tables from nflverse and CollegeFootballData (CFBD) | pandas, data cleaning (best first stream) | `src/ai_nfl_gm/data/` |
 | Market model | a model of what the league pays a player | regression, scikit-learn | `src/ai_nfl_gm/market/` |
 | Prospects | college stats and combine results to NFL value and draft slot | feature engineering, ranking | `src/ai_nfl_gm/prospects/` |
 | Valuation engine | aging curves, surplus value, our own draft chart, trade value | statistics, modelling judgment | `src/ai_nfl_gm/valuation/` |
@@ -51,12 +52,12 @@ Then:
 1. Read your stream's section of [docs/workstreams.md](docs/workstreams.md): what to build
    first and which files to open.
 2. Find a task. Unwritten functions raise `NotImplementedError` with a `TODO(<stream>)` note,
-   so `grep -rn "TODO(" src/` is the backlog. Open issues are the other list.
+   so `git grep -n "TODO(" src/` is the backlog.
 3. Branch, build, open a PR. [CONTRIBUTING.md](CONTRIBUTING.md) is one page.
 
 ## Where to ask
 
-`#ai-nfl-gm` on the CAIS Discord. Tag Jeremy for repo access or anything about scope.
+[`#ai-nfl-gm`](https://carletonai.com) on the CAIS Discord. Tag Jeremy for repo access or anything about scope.
 
 ## Everything else
 
@@ -64,6 +65,7 @@ The detail lives in [docs/](docs/): how the pipeline fits together, the data sou
 their rules, the term plan, decisions, and a reading list. Read it when you need it, not
 before you start.
 
-Code is [MIT](LICENSE). Data comes from [nflverse](https://github.com/nflverse) (mostly
-CC-BY 4.0) and [CollegeFootballData](https://collegefootballdata.com) and stays under their
-terms; [docs/data-sources.md](docs/data-sources.md) has the details and the attribution.
+Code is [MIT](LICENSE). Data comes from [nflverse](https://github.com/nflverse) (which packages
+Over The Cap and Pro Football Reference data) and
+[CollegeFootballData](https://collegefootballdata.com), under their own terms; see
+[docs/data-sources.md](docs/data-sources.md).

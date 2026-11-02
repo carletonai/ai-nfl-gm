@@ -44,12 +44,13 @@ data/                raw / interim / processed caches (gitignored) and shared/ f
 notebooks/           exploration; code that survives moves into src/
 scripts/             CLI entry points (pull data, later: train, export tables)
 tests/               pytest; no network unless marked
+models/              trained model files (gitignored)
 docs/                this folder
-web/                 where the React page goes, or a pointer to the website repo
+web/                 React page, or a pointer to the cais-website repo; see web/README.md
 ```
 
 Modules that are not written yet raise `NotImplementedError` with a `TODO(<workstream>)`
-note saying what belongs there. `grep -rn "TODO(" src/ --include="*.py"` is the backlog.
+note saying what belongs there. `git grep -n "TODO(" src/` is the backlog.
 
 ## Design rules
 
@@ -67,10 +68,3 @@ note saying what belongs there. `grep -rn "TODO(" src/ --include="*.py"` is the 
   loading in handlers.
 - **Notebook to module.** Explore in `notebooks/`; when something is right, move it into
   `src/` with a test.
-
-## Where the frontend lives
-
-The outline calls for a React page on carletonai.com with a small FastAPI backend. The site's
-source is the club's `cais-website` repo, so the page may live there and call this API. `web/`
-holds that decision and, if the Product workstream prefers, a standalone client. See
-[decisions/0001-stack-and-layout.md](decisions/0001-stack-and-layout.md).

@@ -4,11 +4,12 @@ Short version: branch from `main`, make `make check` pass, open a PR, get one re
 
 ## Workflow
 
-1. **Branch** from `main`, named `<stream>/<topic>`: `data/explode-cap-hits`,
-   `market/wr-ridge-baseline`, `product/trade-page`.
+1. **Branch** from `main`, named `<stream>/<topic>`: `git switch -c data/explode-cap-hits`
+   (or `market/wr-ridge-baseline`, `product/trade-page`). No push access? Fork and open the
+   PR from your fork.
 2. **Commit** in conventional-commit style, imperative and lowercase:
-   `feat(data): explode per-year cap hits`. Types: `feat`, `fix`, `refactor`, `test`,
-   `docs`, `chore`. Scope is the package or stream.
+   `feat(data): explode per-year cap hits` (the type and scope lists are in
+   [docs/conventions.md](docs/conventions.md)).
 3. **Check** with `make check` (ruff and pytest, exactly what CI runs). `make format` fixes
    most lint for you.
 4. **Open a PR** against `main` and fill in the template. One module plus its test is the

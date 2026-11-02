@@ -14,12 +14,10 @@ cap hits; one clean table per position.
 have the TODOs), `configs/sports/nfl.yaml` (the position crosswalk), `docs/data-sources.md`.
 `make pull-data` downloads the core tables.
 
-**First tasks:** explode the nested `season_history` cap hits; derive the rookie/veteran flag
-from `contract_history.contract_type`; measure how many contracts fail to join to `players`
-and why (about 7% of rows have no `gsis_id`); confirm the lossy position mappings in the sport
-config (OLB, DB, DL, OL) against OTC's per-player labels.
-
-**Good for:** pandas, SQL, data cleaning; the best first stream for new members.
+**First tasks:** `explode_cap_hits` in `contracts.py` (its TODO gives the steps and the test);
+then the rookie/veteran flag in `veteran_contracts`; measure how many contracts fail to join to
+`players` and why (about 7% of rows have no `gsis_id`); confirm the lossy position mappings in
+the sport config (OLB, DB, DL, OL) against Over The Cap (OTC) per-player labels.
 
 ## Market model
 
@@ -36,7 +34,6 @@ plus age at signing; ridge regression first, then a regularised gradient-boosted
 MAE in % of cap on the held-out classes and compare with Spotrac/OTC numbers for the same
 players.
 
-**Good for:** regression, scikit-learn, gradient boosting.
 
 ## Prospects
 
@@ -53,7 +50,6 @@ college seasons of stats); join to nflverse `draft_picks` and `combine`; predict
 slot first, then look for where production disagrees with it. Keep an eye on Big Data Bowl
 2027 (see the reading list).
 
-**Good for:** feature engineering, ranking metrics.
 
 ## Valuation engine
 
@@ -73,7 +69,6 @@ surplus of drafted players over their rookie deal by slot (needs the market mode
 stand-in, second-contract APY); group nearby picks and report floor/expected/ceiling; price
 the trades in nflverse `trades` and see whether the answers are defensible.
 
-**Good for:** statistics, modelling judgment.
 
 ## Product
 
@@ -85,15 +80,15 @@ outputs.
 **Start here:** `src/ai_nfl_gm/api/` (`make api`, then http://127.0.0.1:8000/docs), `web/README.md`.
 
 **First tasks:** decide where the page lives (this repo or `cais-website`); a trade form
-that posts to `/trade/evaluate` and shows both sides with the Jimmy Johnson comparison;
-team-context sliders and future-pick discount as inputs; later the draft board.
-
-**Good for:** React or plain web, APIs.
+that posts to `/trade/evaluate` and shows both totals and the difference, with the future-pick
+discount as an input; later the draft board, the Jimmy Johnson comparison and team-context
+sliders.
 
 ## Cross-cutting
 
 - **Production label.** The pick curve, surplus and the prospect projection all regress onto
-  one cross-position value measure. Decision 0002: build our own composite from many metrics;
+  one cross-position value measure. [Decision 0002](decisions/0002-target-variable.md): build
+  our own composite from many metrics;
   the Valuation workstream owns its construction (`valuation/player_value.py`).
 - **Position taxonomy.** Every raw label goes through the crosswalk in the sport config.
 - **Scope.** The WR pipeline shipping is the milestone, not "the framework".
