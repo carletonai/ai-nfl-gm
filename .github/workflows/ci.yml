@@ -26,7 +26,7 @@ jobs:
           enable-cache: true
 
       - name: Install project
-        run: uv sync --all-extras --python ${{ matrix.python }}
+        run: uv sync --locked --all-extras --python ${{ matrix.python }}
 
       - name: Ruff lint
         run: uv run ruff check . --output-format=github
