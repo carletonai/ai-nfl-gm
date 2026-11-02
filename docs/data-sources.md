@@ -5,7 +5,10 @@ is the use these sources exist for. (Practical read, not legal advice.)
 
 ## nflverse
 
-Parquet assets on GitHub releases, no key, nearly all CC-BY 4.0 (FTN charting CC-BY-SA 4.0).
+Parquet assets on GitHub releases, no key. Most releases are CC-BY 4.0; FTN charting and
+participation data from 2023 on are CC-BY-SA 4.0; the fantasy player-id table is GPL-3 (avoid
+it); and the `trades` and draft-value tables come from the nflverse/nfldata repo, which has no
+licence file, so attribute them and never redistribute them raw.
 `ai_nfl_gm.data.nflverse.load(table)` downloads and caches them; add tables to
 `nflverse.TABLES` as needed. Release page: https://github.com/nflverse/nflverse-data/releases
 
@@ -13,7 +16,7 @@ Parquet assets on GitHub releases, no key, nearly all CC-BY 4.0 (FTN charting CC
 | --- | --- | --- | --- |
 | `contracts` | `contracts/historical_contracts.parquet` | Every contract, sourced from Over The Cap. `apy_cap_pct` (APY as % of cap at signing) is the market model's target; `inflated_apy` adjusts for cap growth | Per-year cap hits (`cap_number`, `cap_percent`) are nested in `season_history`; contract types (`Drafted`, `UDFA`, `UFA`, `Extension`, `Franchise`, ...) in `contract_history`; **explode first**. Positions use OTC labels (`ED`, `IDL`, `LT`, `RG`) |
 | `players` | `players/players.parquet` | One row per player with `gsis_id`, `pfr_id`, `otc_id`, `espn_id`, `pff_id` | The ID crosswalk. Known incomplete |
-| `draft_picks` | `draft_picks/draft_picks.parquet` | Season, round, pick, team, `gsis_id`, `pfr_player_id`, `cfb_player_id`, career AV | Joins NFL to college on draft year + overall pick |
+| `draft_picks` | `draft_picks/draft_picks.parquet` | Season, round, pick (overall), team, `gsis_id`, `pfr_player_id`, `cfb_player_id`, career stats, Approximate Value as `w_av` (weighted) and `dr_av` (with drafting team) | `cfb_player_id` is a Sports-Reference college slug (`joe-burrow-1`), not a CFBD id; `car_av` is empty on every row, use `w_av` |
 | `combine` | `combine/combine.parquet` | Combine measurables (from PFR) | |
 | `trades` | `trades/trades.parquet` | Historical trades | The trade ledger to check the calculator against |
 | `stats_player_reg` | `stats_player/stats_player_reg_{season}.parquet` | Season player stats (regular season) | Replace `reg` with `week` for weekly |
@@ -26,19 +29,23 @@ Data dictionaries: [contracts](https://nflreadr.nflverse.com/articles/dictionary
 [players](https://nflreadr.nflverse.com/articles/dictionary_players.html),
 [draft picks](https://nflreadr.nflverse.com/articles/dictionary_draft_picks.html).
 
-We read the parquet URLs directly rather than through `nflreadpy`, which is still beta and
-lacks loaders for PFR advanced stats and ESPN QBR.
+We read the parquet URLs directly rather than through `nflreadpy` (0.1.5, labelled beta). It
+does ship `load_pfr_advstats`; what it lacks is ESPN QBR (`espn_data/qbr_season_level.parquet`
+on the releases). Reading the files directly keeps every table one line away.
 
 ## CollegeFootballData (CFBD)
 
-REST API with a free key (about 1,000 calls/month; an academic tier exists but needs a `.edu`
-address). Use the `apinext` base URL; the legacy API is deprecated. Client:
-`ai_nfl_gm.data.cfbd.CFBDClient`, which caches every response under `data/raw/cfbd/`.
+REST API with a free key (about 1,000 calls/month per account; the academic tier needs a
+`.edu` address, which Carleton's `.ca` is not). One key per person: the terms do not allow
+pooling keys. Base URL `https://api.collegefootballdata.com`, the official `cfbd` Python
+client's default (`apinext` was the v2 preview host; the planning notes' advice to use it is
+out of date). Client: `ai_nfl_gm.data.cfbd.CFBDClient`, which caches every response under
+`data/raw/cfbd/`.
 
 | Endpoint | What | Quota note |
 | --- | --- | --- |
 | `/stats/player/season?year=` | Season stats for every player that year | One call per season; coverage 2004+ |
-| `/draft/picks?year=` | NFL draft picks with college athlete id, pre-draft ranking and grade | The consensus-board input |
+| `/draft/picks?year=` | NFL draft picks with college athlete id, `overall` pick, pre-draft ranking and grade | The consensus-board input. CFBD's `pick` is within the round; join on `overall` |
 | recruiting, transfer portal, PPA | Recruiting rank, portal moves, predicted points added | As needed |
 
 The whole college pull is roughly 50 calls. Cache once; never loop over players.
@@ -50,7 +57,7 @@ Terms permit commercial use; redistribution of raw data is restricted.
 | --- | --- | --- |
 | contracts to players | `otc_id` | Some contracts lack an `otc_id` match; log, do not fuzzy-match |
 | players to stats | `gsis_id` | |
-| NFL draft to college | draft year + overall pick; check with `cfb_player_id` | CFBD's draft endpoint carries its own athlete id |
+| NFL draft to college | `draft_picks.season` + `pick` = CFBD `year` + `overall` | `cfb_player_id` is a Sports-Reference slug and CFBD's athlete id is CFBD's own, so the ids do not join each other; CFBD's `pick` is within-round |
 | position labels | `configs/sports/nfl.yaml` crosswalk | OTC, PFR and rosters disagree (EDGE vs DE/OLB, IDL vs DT); OLB is scheme-dependent |
 
 ## What not to do

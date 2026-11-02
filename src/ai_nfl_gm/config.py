@@ -40,7 +40,8 @@ class Settings(BaseSettings):
         default=None,
         validation_alias=AliasChoices("CFBD_API_KEY", "AI_NFL_GM_CFBD_API_KEY"),
     )
-    cfbd_base_url: str = "https://apinext.collegefootballdata.com"
+    # The official cfbd Python client (5.33) defaults to this host; apinext was the v2 preview.
+    cfbd_base_url: str = "https://api.collegefootballdata.com"
 
     @field_validator("data_dir", "configs_dir", mode="after")
     @classmethod

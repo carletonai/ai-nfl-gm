@@ -1,8 +1,10 @@
 """Minimal CollegeFootballData (CFBD) API client.
 
 CFBD needs a free API key (https://collegefootballdata.com/key; about 1,000 calls a
-month on the free tier). Set ``CFBD_API_KEY`` in your ``.env``. Use the ``apinext`` base
-URL; the legacy API is deprecated.
+month on the free tier). Set ``CFBD_API_KEY`` in your ``.env``. The base URL is
+``api.collegefootballdata.com`` (what the official ``cfbd`` client 5.33 defaults to;
+``apinext`` was the v2 preview host). One quota per account, and the terms do not allow
+sharing a key between people, so each member who pulls college data needs their own key.
 
 The whole college pull the prospects workstream needs is roughly 50 calls (player
 season stats take only a ``year`` and return everyone), so cache every response under

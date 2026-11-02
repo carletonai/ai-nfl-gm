@@ -115,8 +115,9 @@ notebook-to-module habit. Decisions that affect everyone are recorded in
 
 ## Attribution
 
-Data from [nflverse](https://github.com/nflverse) (CC-BY 4.0; FTN charting CC-BY-SA 4.0),
-which packages Over The Cap contracts, Pro Football Reference statistics and NFL Next Gen Stats;
+Data from [nflverse](https://github.com/nflverse) (mostly CC-BY 4.0; FTN data CC-BY-SA 4.0; see
+`docs/data-sources.md` for the exceptions), which packages Over The Cap contracts, Pro Football
+Reference statistics and NFL Next Gen Stats;
 college data from [CollegeFootballData.com](https://collegefootballdata.com). The NFL data
 belongs to its owners and their terms govern. This is a non-commercial club project.
 

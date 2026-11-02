@@ -1,9 +1,9 @@
 """Download nflverse release parquet files into the local cache.
 
 nflverse publishes its data as parquet assets on GitHub releases, free and without a
-key (CC-BY 4.0; FTN charting CC-BY-SA 4.0). This module reads those URLs directly with
-pandas instead of depending on the ``nflreadpy`` wrapper, which is still beta and
-lacks loaders for PFR advanced stats and ESPN QBR.
+key (most releases CC-BY 4.0; see ``docs/data-sources.md`` for the exceptions). This module
+reads those URLs directly with pandas instead of depending on the ``nflreadpy`` wrapper
+(0.1.5, still labelled beta, no ESPN QBR loader), so adding a table is one line here.
 
 Usage::
 
@@ -37,7 +37,8 @@ TABLES: dict[str, str] = {
     "contracts": "contracts/historical_contracts.parquet",
     # One row per player; the ID crosswalk (gsis_id, pfr_id, otc_id, espn_id, ...).
     "players": "players/players.parquet",
-    # season, round, pick, team, gsis_id, pfr_player_id, cfb_player_id; career AV columns.
+    # season, round, pick (overall), team, gsis_id, pfr_player_id, cfb_player_id (a Sports-
+    # Reference slug); Approximate Value in w_av and dr_av (car_av is empty on every row).
     "draft_picks": "draft_picks/draft_picks.parquet",
     "combine": "combine/combine.parquet",
     "trades": "trades/trades.parquet",

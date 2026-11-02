@@ -6,9 +6,11 @@ Two joins hold the whole project together and both are known to be imperfect:
   ``otc_id``, ``pfr_id``, ``espn_id`` and ``pff_id``. Join ``contracts.otc_id`` to
   ``players.otc_id``, then ``players.gsis_id`` to the stats tables. No fuzzy matching;
   log the misses instead.
-* **College to NFL.** ``draft_picks`` carries ``cfb_player_id`` and ``pfr_player_id``;
-  CFBD's draft endpoint carries its own college athlete id. Join on draft year plus
-  overall pick as the primary key and use the ids as a check.
+* **College to NFL.** ``draft_picks.cfb_player_id`` is a Sports-Reference college slug
+  (``joe-burrow-1``) and CFBD's draft endpoint carries CFBD's own athlete id, so the two
+  ids never join each other. The key is draft year plus overall pick:
+  ``draft_picks.season, pick`` to CFBD ``year, overall`` (CFBD's ``pick`` is within the
+  round). Carry both ids along so college stats and PFR pages can be reached afterwards.
 
 Position labels disagree across OTC, PFR and rosters, so every raw label goes through
 :func:`canonical_positions` before grouping.

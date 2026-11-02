@@ -7,8 +7,8 @@
 The project outline (Oct 28, 2026) names the tools: Python, pandas, nflreadpy/nflverse, the
 CFBD API, SQLite or Parquet cache, scikit-learn, LightGBM or XGBoost, statsmodels, a React
 page with a small FastAPI backend, Git and GitHub PRs. The data feasibility check added two
-constraints: read nflverse parquet directly because the Python wrapper is beta, and never
-commit raw data.
+constraints: read nflverse parquet directly rather than depend on the beta Python wrapper,
+and never commit raw data.
 
 ## Decision
 

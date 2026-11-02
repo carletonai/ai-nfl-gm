@@ -1,7 +1,9 @@
 """Prospect features from CFBD and nflverse combine data.
 
-TODO(prospects): join CFBD player season stats (by college athlete id) to nflverse
-``draft_picks`` (draft year + overall pick) and ``combine``. Features: final two college
+TODO(prospects): join CFBD draft picks to nflverse ``draft_picks`` on draft year plus
+overall pick (CFBD ``year, overall`` to nflverse ``season, pick``), then CFBD player season
+stats by CFBD's athlete id, and ``combine`` by name plus draft year. Career value for the
+outcome: ``w_av`` (``car_av`` is empty). Features: final two college
 seasons of production, age on draft day, recruiting rank, combine measurables, the
 consensus pre-draft grade/ranking from CFBD's draft endpoint.
 """
