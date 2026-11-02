@@ -13,8 +13,9 @@ commit raw data.
 ## Decision
 
 - **Python 3.11+**, pinned to 3.12 for development, managed with **uv** (lockfile committed).
-  One `pyproject.toml`; modelling libraries in an `ml` extra so `uv sync` stays fast for the
-  Data and Product streams.
+  One `pyproject.toml`; modelling libraries in an `ml` extra and notebook tooling in a
+  `notebooks` extra. `make setup` installs everything; the split exists so a lean `uv sync`
+  (an API deploy, say) can skip them.
 - **pandas + pyarrow** reading nflverse release parquet directly, cached under `data/raw/`
   (gitignored). Parquet, not SQLite, for the cache: zero setup and it is what nflverse ships.
 - **src layout**, one package `ai_nfl_gm` with a subpackage per pipeline stage

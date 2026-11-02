@@ -14,9 +14,10 @@ cap hits; one clean table per position.
 have the TODOs), `configs/sports/nfl.yaml` (the position crosswalk), `docs/data-sources.md`.
 `make pull-data` downloads the core tables.
 
-**First tasks:** explode the nested `cols` cap hits; decide the rookie/veteran flag; measure
-how many contracts fail to join to `players` and why; verify the cap table in the sport config
-against Over The Cap.
+**First tasks:** explode the nested `season_history` cap hits; derive the rookie/veteran flag
+from `contract_history.contract_type`; measure how many contracts fail to join to `players`
+and why (about 7% of rows have no `gsis_id`); verify the cap table and the position crosswalk
+in the sport config against Over The Cap.
 
 **Good for:** pandas, SQL, data cleaning; the best first stream for new members.
 
@@ -28,7 +29,7 @@ and position; held-out error on the last two free-agency classes.
 **Week-4 milestone:** a WR model beating `NaiveBaseline` on the held-out classes.
 
 **Start here:** `src/ai_nfl_gm/market/` (`model.py` has the protocol and baseline, `evaluate.py`
-the split and metrics, `features.py` the TODO). Install the `ml` extra.
+the split and metrics, `features.py` the TODO). `make setup` installs the `ml` extra.
 
 **First tasks:** WR features from targets, receptions, yards, receiving EPA, target share,
 plus age at signing; ridge regression first, then a regularised gradient-boosted model; report
@@ -61,8 +62,9 @@ slot first, then look for where production disagrees with it. Keep an eye on Big
 **Week-4 milestone:** our own draft chart, checked against Fitzgerald-Spielberger and Jimmy
 Johnson.
 
-**Start here:** `src/ai_nfl_gm/valuation/` (`trade.py` and `draft_chart.py` have working
-arithmetic and reference curves; `aging.py` and `surplus.py` have the TODOs).
+**Start here:** `src/ai_nfl_gm/valuation/` (`trade.py` has the trade arithmetic, `draft_chart.py`
+the published Jimmy Johnson table as a comparison; `aging.py`, `surplus.py` and the derived
+chart are the TODOs).
 
 **First tasks:** WR aging curve from player-seasons; surplus of drafted players over their
 rookie deal by slot (needs the market model or, as a stand-in, second-contract APY); group

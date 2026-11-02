@@ -17,7 +17,8 @@ or newer; `.python-version` pins 3.12 for `uv`.
 ## Pick work
 
 - Workstreams and their week-4 milestones are in [docs/workstreams.md](docs/workstreams.md).
-- Open work is in GitHub Issues (use the *Task* template) and in the code: `grep -rn "TODO(" src/`.
+- Open work is in GitHub Issues (use the *Task* template) and in the code:
+  `grep -rn "TODO(" src/ --include="*.py"`.
 - Say what you are picking up in `#ai-nfl-gm` so two people do not do the same thing.
 
 ## Branches and pull requests
@@ -70,8 +71,8 @@ Do not add AI co-author trailers or override authorship with `--author`.
 
 ## Tests
 
-- `pytest` under `tests/`. Tests run offline; anything that downloads is marked
-  `@pytest.mark.network` and skipped in CI (`pytest -m network` runs them).
+- `pytest` under `tests/`. Tests run offline by default; anything that downloads is marked
+  `@pytest.mark.network` and skipped unless you ask for it (`make test-network`).
 - New behaviour comes with a test on a small fixture. Build fixtures by hand or by saving a
   few rows of a real table under `tests/fixtures/` (keep them under a few KB).
 - A model PR reports its held-out metric in the description, using
@@ -86,9 +87,9 @@ are not imported by anything.
 
 ## Data
 
-- Never commit raw downloads. The `data/` tree is gitignored and pre-commit blocks files
-  over 500 KB. If you need a shared derived table, add it under `data/processed/` on purpose,
-  small, and mention it in the PR.
+- Never commit raw downloads. `data/raw`, `data/interim` and `data/processed` are gitignored
+  and pre-commit blocks files over 500 KB. If a derived table must be shared, put it in
+  `data/shared/` (tracked), keep it small, and mention it in the PR.
 - Secrets go in `.env` (gitignored). `.env.example` lists the names.
 - Use the sources only as described in [docs/data-sources.md](docs/data-sources.md).
 

@@ -20,7 +20,7 @@ body:
     id: done
     attributes:
       label: Definition of done
-      placeholder: e.g. a WR table with one row per player-season 2011 to now, checked into data/processed as a derived table, with a test on its shape
+      placeholder: e.g. a WR table with one row per player-season 2011 to now, written to data/processed (and data/shared if other streams need it), with a test on its shape
   - type: textarea
     id: notes
     attributes:

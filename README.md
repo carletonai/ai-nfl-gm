@@ -34,7 +34,7 @@ make setup          # uv sync --all-extras: creates .venv with everything
 make hooks          # pre-commit hooks (ruff, no large files, no secrets)
 cp .env.example .env   # add your CFBD_API_KEY if you work on prospects
 make check          # lint + tests; this is what CI runs
-make pull-data      # downloads the core nflverse tables into data/raw (a few hundred MB)
+make pull-data      # core nflverse tables into data/raw (~20 MB); --seasons FIRST LAST to change the range
 make api            # FastAPI dev server at http://127.0.0.1:8000/docs
 ```
 
@@ -61,8 +61,8 @@ src/ai_nfl_gm/
 ├── valuation/       3-4. aging curves, surplus, our draft chart, trade value
 ├── prospects/       5. college stats + combine -> predicted NFL value vs consensus slot
 └── api/             6. FastAPI backend the trade calculator and draft board read
-configs/sports/      league rules as data: cap table, position groups, crosswalk, discounts
-data/                raw / interim / processed caches (gitignored; see data/README.md)
+configs/             sports/ league rules as data (cap table, positions, crosswalk); draft_charts/ reference tables
+data/                raw / interim / processed caches (gitignored) and shared/ for published tables
 notebooks/           exploration; code that survives moves into src/
 scripts/             CLI entry points (pull data, later: train, export tables)
 tests/               pytest; no network unless marked
@@ -71,7 +71,7 @@ web/                 where the React page goes, or a pointer to the website repo
 ```
 
 Modules that are not written yet raise `NotImplementedError` with a `TODO(<workstream>)`
-note saying what belongs there. `grep -rn "TODO(" src/` is the backlog.
+note saying what belongs there. `grep -rn "TODO(" src/ --include="*.py"` is the backlog.
 
 ## Workstreams
 
@@ -98,8 +98,8 @@ Twelve weeks in three phases. A phase ends when its gate is met, not when the ca
 ## Data rules
 
 - **Do not commit raw data.** `data/raw`, `data/interim` and `data/processed` are gitignored, and
-  a pre-commit hook blocks files over 500 KB. Publish derived tables (features, model outputs)
-  deliberately, and say so in the PR.
+  a pre-commit hook blocks files over 500 KB. A derived table that everyone needs (features,
+  model outputs) goes in `data/shared/`, small and on purpose, and the PR says so.
 - **Use sources through nflverse.** Do not scrape Pro Football Reference or Over The Cap; PFR's
   terms ban automated access. PFF data is paywalled and excluded.
 - **Know the blind spots.** Public data is strong for QB, WR, RB and TE, decent for EDGE, thin

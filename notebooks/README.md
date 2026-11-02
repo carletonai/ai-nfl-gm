@@ -2,7 +2,8 @@
 
 Exploration lives here; nothing imports from this folder.
 
-- Install the extra: `uv sync --extra notebooks`, then `uv run jupyter lab`.
+- `make setup` already installs JupyterLab; start it with `uv run jupyter lab`. (If you synced
+  without extras, add them with `uv sync --inexact --extra notebooks` so the `ml` packages stay.)
 - Name notebooks `NN_<stream>_<topic>.ipynb`, e.g. `01_data_contracts_explore.ipynb`.
 - Clear outputs before committing: `uv run jupyter nbconvert --clear-output --inplace <nb>`.
 - Load data through the package, not by hand:
