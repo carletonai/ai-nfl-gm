@@ -33,7 +33,7 @@ RELEASE_BASE = "https://github.com/nflverse/nflverse-data/releases/download"
 #: Table name -> ``"<release tag>/<asset file>"``. ``{season}`` is filled from the
 #: ``season`` argument for per-season assets.
 TABLES: dict[str, str] = {
-    # One row per contract, per-year cap hits nested in the `cols` column (explode first).
+    # One row per contract; per-year cap hits are nested in `season_history` (explode first).
     "contracts": "contracts/historical_contracts.parquet",
     # One row per player; the ID crosswalk (gsis_id, pfr_id, otc_id, espn_id, ...).
     "players": "players/players.parquet",

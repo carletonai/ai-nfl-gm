@@ -11,7 +11,7 @@ Parquet assets on GitHub releases, no key, nearly all CC-BY 4.0 (FTN charting CC
 
 | Table (ours) | Asset | What it is | Notes |
 | --- | --- | --- | --- |
-| `contracts` | `contracts/historical_contracts.parquet` | Every contract, sourced from Over The Cap. `apy_cap_pct` (APY as % of cap at signing) is the market model's target; `inflated_apy` adjusts for cap growth | Per-year cap hits are nested in `cols`; **explode first** |
+| `contracts` | `contracts/historical_contracts.parquet` | Every contract, sourced from Over The Cap. `apy_cap_pct` (APY as % of cap at signing) is the market model's target; `inflated_apy` adjusts for cap growth | Per-year cap hits (`cap_number`, `cap_percent`) are nested in `season_history`; contract types (`Drafted`, `UDFA`, `UFA`, `Extension`, `Franchise`, ...) in `contract_history`; **explode first**. Positions use OTC labels (`ED`, `IDL`, `LT`, `RG`) |
 | `players` | `players/players.parquet` | One row per player with `gsis_id`, `pfr_id`, `otc_id`, `espn_id`, `pff_id` | The ID crosswalk. Known incomplete |
 | `draft_picks` | `draft_picks/draft_picks.parquet` | Season, round, pick, team, `gsis_id`, `pfr_player_id`, `cfb_player_id`, career AV | Joins NFL to college on draft year + overall pick |
 | `combine` | `combine/combine.parquet` | Combine measurables (from PFR) | |

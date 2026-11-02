@@ -58,9 +58,14 @@ position_groups:
 # Build this on day one (feasibility check). Keys are raw labels as they appear in
 # the source tables; values are canonical groups above.
 #
-# Known ambiguity: OLB is EDGE in a 3-4 and an off-ball LB in a 4-3. The default
-# below treats OLB as EDGE because OTC prices them that way; the Data workstream
-# should override per player using snap data or PFR's position when available.
+# The nflverse contracts table (Over The Cap) uses: QB RB FB WR TE LT LG C RG RT
+# ED IDL LB CB S K P LS. Rosters and PFR add DE, DT, NT, OLB, ILB, MLB, FS, SS, G, T.
+#
+# Known ambiguity (VERIFY): rosters and PFR use OLB for both 3-4 edge rushers and
+# 4-3 off-ball linebackers. OTC has no OLB label (each player is filed under ED or
+# LB), so OLB -> EDGE below is an unverified default. The Data workstream should
+# resolve it per player from OTC's ED/LB assignment, PFR's position or snap data.
+# DB -> CB, DL -> IDL and OL -> IOL are lossy defaults for the same reason.
 position_crosswalk:
   QB: QB
   RB: RB
@@ -77,20 +82,21 @@ position_crosswalk:
   LG: IOL
   RG: IOL
   C: IOL
-  OL: IOL
+  OL: IOL  # verify: lossy
   IOL: IOL
   DE: EDGE
+  ED: EDGE
   EDGE: EDGE
-  OLB: EDGE
+  OLB: EDGE  # verify: scheme-dependent, see note above
   DT: IDL
   NT: IDL
-  DL: IDL
+  DL: IDL  # verify: lossy
   IDL: IDL
   LB: LB
   ILB: LB
   MLB: LB
   CB: CB
-  DB: CB
+  DB: CB  # verify: lossy
   S: S
   FS: S
   SS: S
