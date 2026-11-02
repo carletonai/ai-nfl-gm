@@ -1,0 +1,107 @@
+# Sport configuration. The code treats the sport as a config so another league
+# (NBA next) can follow by adding a sibling file, not by editing the models.
+#
+# Everything here is a starting point for the Data workstream. Numbers marked
+# "verify" must be checked against Over The Cap before they feed a model.
+
+name: nfl
+display_name: NFL
+currency_label: "% of cap"
+
+# Veteran contracts since this season train the market model (outline, step 2).
+market_model_first_season: 2011
+
+# Rookie deals are four cheap years; the fifth-year option (1st round) is a stretch.
+rookie_contract_years: 4
+
+# Future picks are discounted roughly x0.85 per year ("one round later" rule of thumb).
+future_pick_discount_per_year: 0.85
+
+# League salary cap by season, in millions of USD. Source: Over The Cap
+# (https://overthecap.com/salary-cap). VERIFY before use; nflverse contracts already
+# carry apy_cap_pct, so this table is for converting cap hits, not for APY.
+salary_cap_musd:
+  2011: 120.375
+  2012: 120.6
+  2013: 123.0
+  2014: 133.0
+  2015: 143.28
+  2016: 155.27
+  2017: 167.0
+  2018: 177.2
+  2019: 188.2
+  2020: 198.2
+  2021: 182.5
+  2022: 208.2
+  2023: 224.8
+  2024: 255.4
+  2025: 279.2
+
+# Canonical position groups the models use. Everything else maps onto these.
+position_groups:
+  - QB
+  - RB
+  - WR
+  - TE
+  - OT
+  - IOL
+  - EDGE
+  - IDL
+  - LB
+  - CB
+  - S
+  - K
+  - P
+  - LS
+
+# Position crosswalk: OTC, PFR and NFL rosters disagree (EDGE vs DE/OLB, IDL vs DT).
+# Build this on day one (feasibility check). Keys are raw labels as they appear in
+# the source tables; values are canonical groups above.
+#
+# Known ambiguity: OLB is EDGE in a 3-4 and an off-ball LB in a 4-3. The default
+# below treats OLB as EDGE because OTC prices them that way; the Data workstream
+# should override per player using snap data or PFR's position when available.
+position_crosswalk:
+  QB: QB
+  RB: RB
+  HB: RB
+  FB: RB
+  WR: WR
+  TE: TE
+  T: OT
+  OT: OT
+  LT: OT
+  RT: OT
+  G: IOL
+  OG: IOL
+  LG: IOL
+  RG: IOL
+  C: IOL
+  OL: IOL
+  IOL: IOL
+  DE: EDGE
+  EDGE: EDGE
+  OLB: EDGE
+  DT: IDL
+  NT: IDL
+  DL: IDL
+  IDL: IDL
+  LB: LB
+  ILB: LB
+  MLB: LB
+  CB: CB
+  DB: CB
+  S: S
+  FS: S
+  SS: S
+  SAF: S
+  K: K
+  PK: K
+  P: P
+  LS: LS
+
+# Phase order from the outline: one position end to end before any breadth.
+position_rollout:
+  - WR
+  - EDGE
+  - QB
