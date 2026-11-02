@@ -122,5 +122,5 @@ belongs to its owners and their terms govern. This is a non-commercial club proj
 
 ## License
 
-Not chosen yet. The maintainers intend an open licence (MIT is the default suggestion); until a
-`LICENSE` file lands, all rights reserved by the contributors.
+Code is [MIT](LICENSE). The data is not ours to license: nflverse releases are CC-BY 4.0 (FTN
+CC-BY-SA 4.0) and the underlying NFL data belongs to its owners; see Attribution above.

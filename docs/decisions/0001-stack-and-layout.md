@@ -34,4 +34,4 @@ commit raw data.
 - Contributors need `uv` installed; nothing else.
 - `nflreadpy` is not a dependency. If its loaders catch up, swapping is one module.
 - Deploying the API is undecided; it is a small service and can be revisited in phase 3.
-- No `LICENSE` yet: the maintainers choose one (MIT suggested) and add it.
+- Code is MIT licensed (Jeremy's call, Nov 2, 2026). Data stays under its sources' terms.

@@ -3,10 +3,12 @@ name = "ai-nfl-gm"
 version = "0.1.0"
 description = "Price every NFL player and draft pick in surplus value, then make free-agency, trade and draft decisions from it."
 readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.11"
 authors = [{ name = "Carleton AI Society" }]
 keywords = ["nfl", "nflverse", "salary-cap", "surplus-value", "draft", "sports-analytics"]
 classifiers = [
+  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
