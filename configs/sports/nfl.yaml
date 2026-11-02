@@ -1,8 +1,8 @@
 # Sport configuration. The code treats the sport as a config so another league
 # (NBA next) can follow by adding a sibling file, not by editing the models.
 #
-# Everything here is a starting point for the Data workstream. Numbers marked
-# "verify" must be checked against Over The Cap before they feed a model.
+# Everything here is a starting point for the Data workstream. Entries marked
+# "verify" are unconfirmed defaults; everything else cites its source.
 
 name: nfl
 display_name: NFL
@@ -17,9 +17,21 @@ rookie_contract_years: 4
 # Future picks are discounted roughly x0.85 per year ("one round later" rule of thumb).
 future_pick_discount_per_year: 0.85
 
-# League salary cap by season, in millions of USD. Source: Over The Cap
-# (https://overthecap.com/salary-cap). VERIFY before use; nflverse contracts already
-# carry apy_cap_pct, so this table is for converting cap hits, not for APY.
+# League salary cap by season (the per-team limit), in millions of USD.
+#
+# Verified 2026-11-02 two ways:
+#   1. Against Over The Cap's own figures as shipped in the nflverse contracts table:
+#      every season's median of apy / apy_cap_pct over deals of 5%+ of the cap lands
+#      within 0.2% of the value below. Re-run: `make check-cap-table`
+#      (scripts/check_cap_table.py). OTC rounds apy_cap_pct to three decimals, so the
+#      check confirms to about $0.3M, not to the dollar.
+#   2. The league's announcements for the recent seasons: 2024 $255.4M
+#      (nfl.com/news/nfl-salary-cap-set-at-255-4m-per-team-for-2024-regular-season),
+#      2025 $279.2M, 2026 $301.2M
+#      (nfl.com/news/nfl-announces-2026-salary-cap-set-at-301-2-million-per-team).
+#
+# nflverse contracts already carry apy_cap_pct and per-year cap_percent, so this table
+# converts dollars to % of cap and back; it is not what the market model trains on.
 salary_cap_musd:
   2011: 120.375
   2012: 120.6
@@ -36,6 +48,7 @@ salary_cap_musd:
   2023: 224.8
   2024: 255.4
   2025: 279.2
+  2026: 301.2
 
 # Canonical position groups the models use. Everything else maps onto these.
 position_groups:

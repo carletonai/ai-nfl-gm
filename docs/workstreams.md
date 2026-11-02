@@ -16,8 +16,8 @@ have the TODOs), `configs/sports/nfl.yaml` (the position crosswalk), `docs/data-
 
 **First tasks:** explode the nested `season_history` cap hits; derive the rookie/veteran flag
 from `contract_history.contract_type`; measure how many contracts fail to join to `players`
-and why (about 7% of rows have no `gsis_id`); verify the cap table and the position crosswalk
-in the sport config against Over The Cap.
+and why (about 7% of rows have no `gsis_id`); confirm the lossy position mappings in the sport
+config (OLB, DB, DL, OL) against OTC's per-player labels.
 
 **Good for:** pandas, SQL, data cleaning; the best first stream for new members.
 

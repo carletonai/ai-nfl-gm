@@ -1,5 +1,5 @@
 # Common tasks. Everything runs through uv so nobody has to activate a venv.
-.PHONY: help setup lint format test test-network check api pull-data hooks clean
+.PHONY: help setup lint format test test-network check api pull-data check-cap-table hooks clean
 
 help:
 	@echo "make setup      install the package, all extras and dev tools into .venv"
@@ -11,6 +11,7 @@ help:
 	@echo "make check      lint + test (what CI runs)"
 	@echo "make api        run the FastAPI dev server on http://127.0.0.1:8000"
 	@echo "make pull-data  download the core nflverse tables into data/raw"
+	@echo "make check-cap-table  cross-check configs/sports/nfl.yaml against Over The Cap data in nflverse"
 
 setup:
 	uv sync --all-extras
@@ -39,6 +40,9 @@ api:
 
 pull-data:
 	uv run python scripts/pull_nflverse.py
+
+check-cap-table:
+	uv run python scripts/check_cap_table.py
 
 clean:
 	rm -rf .pytest_cache .ruff_cache .coverage htmlcov
