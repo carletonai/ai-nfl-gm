@@ -2,9 +2,10 @@
 
 Two kinds of chart live here:
 
-* **Reference charts** teams and analysts already use (Jimmy Johnson; later
-  Fitzgerald-Spielberger from Over The Cap). These ship as comparisons in the
-  calculator, not as our answer.
+* **Reference charts** teams and analysts already use. The Jimmy Johnson table ships as
+  ``configs/draft_charts/jimmy_johnson.csv`` and is the "what teams actually use"
+  comparison in the calculator, not our answer. Fitzgerald-Spielberger (Over The Cap)
+  is the next one to add.
 * **Our derived chart**: the average surplus that players taken at each slot delivered
   over their rookie deal (market value of production minus the fixed rookie-scale cost).
   Every empirical chart since Massey & Thaler (2013) finds surplus peaks around the late
@@ -14,30 +15,45 @@ Two kinds of chart live here:
 from __future__ import annotations
 
 import math
+from pathlib import Path
 
 import pandas as pd
 
-#: Picks in a modern seven-round draft before compensatory picks.
+from ai_nfl_gm.config import get_settings
+
+#: Picks in a seven-round draft before compensatory picks.
 PICKS_PER_DRAFT = 224
+
+#: Reference chart name -> CSV file under ``configs/draft_charts/`` (``pick,value`` rows).
+REFERENCE_CHARTS = {
+    "jimmy_johnson": "jimmy_johnson.csv",
+}
+
+
+def reference_chart(name: str = "jimmy_johnson", configs_dir: Path | None = None) -> pd.DataFrame:
+    """Return a published reference chart as ``pick, value`` rows, ascending by pick."""
+    try:
+        filename = REFERENCE_CHARTS[name]
+    except KeyError as exc:
+        raise KeyError(
+            f"Unknown reference chart {name!r}. Known: {sorted(REFERENCE_CHARTS)}"
+        ) from exc
+    root = configs_dir or get_settings().configs_dir
+    chart = pd.read_csv(root / "draft_charts" / filename, comment="#")
+    return chart.sort_values("pick", ignore_index=True)
 
 
 def jimmy_johnson_approx(pick: int) -> float:
-    """Smooth approximation of the Jimmy Johnson chart: ``3000 * exp(-0.052 * (pick - 1))``.
+    """Smooth stand-in for the Johnson chart: ``3000 * exp(-0.052 * (pick - 1))``.
 
-    Pick 1 is 3000 points. The published table is step-wise; this curve is close enough
-    for a sanity check. TODO(valuation): add the exact published table as a CSV fixture.
+    This is MetricGate's exponential approximation. It matches the published table only
+    at pick 1 and around pick 32; it runs about 40% high through the first half of round
+    one and falls 2x to 100x too low from round three on. Use :func:`reference_chart`
+    for anything a user sees; keep this only where a closed form is convenient.
     """
     if pick < 1:
         raise ValueError("pick must be >= 1")
     return 3000.0 * math.exp(-0.052 * (pick - 1))
-
-
-def reference_chart(name: str = "jimmy_johnson", n_picks: int = PICKS_PER_DRAFT) -> pd.DataFrame:
-    """Return a reference chart as ``pick, value`` rows."""
-    if name != "jimmy_johnson":
-        raise NotImplementedError(f"Reference chart {name!r} not added yet.")
-    picks = range(1, n_picks + 1)
-    return pd.DataFrame({"pick": list(picks), "value": [jimmy_johnson_approx(p) for p in picks]})
 
 
 def derive_surplus_chart(rookie_outcomes: pd.DataFrame) -> pd.DataFrame:

@@ -1,13 +1,19 @@
 """Trade evaluation: a trade is a sum of surplus on each side.
 
 The arithmetic here is deliberately simple; the hard part is the surplus numbers
-that feed it. Three adjustments keep the calculator honest and all three are
-parameters:
+that feed it. The project plan names three adjustments that keep the calculator
+honest. One is implemented:
 
-* future picks are discounted per year out (default from the sport config, ~0.85);
-* team context shifts the exchange rate (a contender weights this year's surplus; a
-  cap-strapped team weights cheap years), exposed as ``year_weights``;
-* a traded player carries extension and franchise-tag rights, a small bonus.
+* future picks are discounted per season out (``discount_per_year``; the sport config
+  default is 0.85, the "one round later" rule of thumb).
+
+Two are not yet:
+
+TODO(valuation): team context should shift the exchange rate (a contender weights this
+year's surplus; a cap-strapped team weights cheap years). Agree the shape of a
+``year_weights`` input with the Product stream, which owns the sliders.
+TODO(valuation): a traded player carries extension and franchise-tag rights; add a small
+bonus on top of his contract years.
 """
 
 from __future__ import annotations

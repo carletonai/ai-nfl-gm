@@ -7,15 +7,34 @@ from ai_nfl_gm.valuation.surplus import SurplusBreakdown
 from ai_nfl_gm.valuation.trade import TradeAsset, TradeSide, discount_future_pick, evaluate_trade
 
 
-def test_jimmy_johnson_pick_one_is_3000() -> None:
-    assert jimmy_johnson_approx(1) == pytest.approx(3000.0)
-    assert jimmy_johnson_approx(32) < jimmy_johnson_approx(1) / 4
-
-
-def test_reference_chart_is_monotone_decreasing() -> None:
-    chart = reference_chart()
+def test_jimmy_johnson_table_matches_published_anchors() -> None:
+    chart = reference_chart("jimmy_johnson").set_index("pick")["value"]
     assert len(chart) == 224
-    assert chart["value"].is_monotonic_decreasing
+    assert chart[1] == 3000
+    assert chart[32] == 590
+    assert chart[64] == 270
+    assert chart[100] == 100
+    assert chart[224] == pytest.approx(3.0)
+
+
+def test_jimmy_johnson_table_is_descending_except_source_quirk() -> None:
+    # The source page prints 31.8 at pick 152 between 31.0 and 31.2; copied as printed,
+    # so that is the one place the table goes up.
+    chart = reference_chart("jimmy_johnson")
+    increases = chart.loc[chart["value"].diff() > 0, "pick"].tolist()
+    assert increases == [152]
+
+
+def test_unknown_reference_chart() -> None:
+    with pytest.raises(KeyError):
+        reference_chart("not_a_chart")
+
+
+def test_jimmy_johnson_approx_anchors_only() -> None:
+    assert jimmy_johnson_approx(1) == pytest.approx(3000.0)
+    assert jimmy_johnson_approx(32) == pytest.approx(598, abs=1)
+    with pytest.raises(ValueError):
+        jimmy_johnson_approx(0)
 
 
 def test_surplus_breakdown() -> None:
@@ -33,8 +52,12 @@ def test_future_pick_discount() -> None:
     ) == pytest.approx(1.0)
 
 
-def test_evaluate_trade_matches_outline_example() -> None:
-    """The illustrative trade from the project plan: WR + 2027 4th for pick 40."""
+def test_evaluate_trade_discounts_future_pick_in_plan_example() -> None:
+    """The illustrative trade from the project plan: WR + 2027 4th for pick 40.
+
+    The plan's table shows the undiscounted total (+5.5); applying its stated x0.85 per
+    year future-pick discount to the 2027 pick gives 4.5 + 0.85 = 5.35.
+    """
     team_a = TradeSide(
         "A",
         [
