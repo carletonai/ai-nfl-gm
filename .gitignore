@@ -1,0 +1,50 @@
+# --- Data: never commit raw dumps. Cache locally; publish only derived tables. ---
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+*.parquet
+*.feather
+*.csv.gz
+*.sqlite
+*.db
+# ...except small test fixtures and derived tables published on purpose.
+!tests/fixtures/**
+!data/shared/**
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Notebooks ---
+.ipynb_checkpoints/
+
+# --- Models and experiment artifacts ---
+models/*
+!models/.gitkeep
+mlruns/
+
+# --- Editors and OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

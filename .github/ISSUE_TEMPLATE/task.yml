@@ -1,0 +1,28 @@
+name: Task
+description: A piece of work for one of the workstreams
+labels: ["task"]
+body:
+  - type: dropdown
+    id: workstream
+    attributes:
+      label: Workstream
+      options: [Data, Market model, Prospects, Valuation engine, Product, Tooling]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs doing
+      description: Outcome, not steps. What table, model, chart or page exists when this is done?
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of done
+      placeholder: e.g. a WR table with one row per player-season 2011 to now, written to data/processed (and data/shared if other streams need it), with a test on its shape
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes and links
+      description: Relevant docs, nflverse tables, reading.
