@@ -14,7 +14,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import yaml
-from pydantic import AliasChoices, BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # src/ai_nfl_gm/config.py -> repo root. Works for the editable install everyone uses.
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_prefix="AI_NFL_GM_",
-        env_file=".env",
+        env_file=REPO_ROOT / ".env",  # found from any cwd (notebooks, IDE test runners)
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -41,6 +41,12 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("CFBD_API_KEY", "AI_NFL_GM_CFBD_API_KEY"),
     )
     cfbd_base_url: str = "https://apinext.collegefootballdata.com"
+
+    @field_validator("data_dir", "configs_dir", mode="after")
+    @classmethod
+    def _anchor_to_repo_root(cls, value: Path) -> Path:
+        """Resolve relative paths against the repo root, not the process cwd."""
+        return value if value.is_absolute() else (REPO_ROOT / value).resolve()
 
     @property
     def raw_dir(self) -> Path:
