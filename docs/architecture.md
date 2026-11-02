@@ -27,6 +27,31 @@ what it consumes and what it produces; column names follow the source data dicti
 | 5. Prospects | `ai_nfl_gm.prospects` | CFBD stats, combine, recruiting, age; consensus slot | predicted NFL value and slot per prospect, over/underdrafted flags |
 | 6. Product | `ai_nfl_gm.api`, `web/` | outputs of 3, 4, 5 as tables | trade calculator and draft board |
 
+## Repository layout
+
+One pipeline, in the order it runs. Each stage is a package under `src/ai_nfl_gm/`.
+
+```
+src/ai_nfl_gm/
+├── config.py        settings (.env) and the sport config (configs/sports/nfl.yaml)
+├── data/            1. pull nflverse + CFBD, ID and position crosswalks, explode cap hits
+├── market/          2. what the league pays for production, age, position (+ held-out eval)
+├── valuation/       3-4. aging curves, surplus, our draft chart, trade value
+├── prospects/       5. college stats + combine -> predicted NFL value vs consensus slot
+└── api/             6. FastAPI backend the trade calculator and draft board read
+configs/             sports/ league rules as data (cap table, positions, crosswalk); draft_charts/ reference tables
+data/                raw / interim / processed caches (gitignored) and shared/ for published tables
+notebooks/           exploration; code that survives moves into src/
+scripts/             CLI entry points (pull data, later: train, export tables)
+tests/               pytest; no network unless marked
+models/              trained model files (gitignored)
+docs/                this folder
+web/                 React page, or a pointer to the cais-website repo; see web/README.md
+```
+
+Modules that are not written yet raise `NotImplementedError` with a `TODO(<workstream>)`
+note saying what belongs there. `git grep -n "TODO(" src/` is the backlog.
+
 ## Design rules
 
 - **Sport is a config.** League rules (cap table, position groups, crosswalk, discounts) live in
@@ -43,10 +68,3 @@ what it consumes and what it produces; column names follow the source data dicti
   loading in handlers.
 - **Notebook to module.** Explore in `notebooks/`; when something is right, move it into
   `src/` with a test.
-
-## Where the frontend lives
-
-The outline calls for a React page on carletonai.com with a small FastAPI backend. The site's
-source is the club's `cais-website` repo, so the page may live there and call this API. `web/`
-holds that decision and, if the Product workstream prefers, a standalone client. See
-[decisions/0001-stack-and-layout.md](decisions/0001-stack-and-layout.md).
