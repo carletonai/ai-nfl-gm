@@ -29,6 +29,10 @@ future_pick_discount_per_year: 0.85
 #      (nfl.com/news/nfl-salary-cap-set-at-255-4m-per-team-for-2024-regular-season),
 #      2025 $279.2M, 2026 $301.2M
 #      (nfl.com/news/nfl-announces-2026-salary-cap-set-at-301-2-million-per-team).
+#   3. 2011-2023 cross-checked against Pro Football Network's cap history page
+#      (profootballnetwork.com/nfl-salary-cap-history). It agrees on every season
+#      except 2013, which it prints as $123.6M; the OTC-implied value is $122.96M,
+#      so 123.0 is kept.
 #
 # nflverse contracts already carry apy_cap_pct and per-year cap_percent, so this table
 # converts dollars to % of cap and back; it is not what the market model trains on.
