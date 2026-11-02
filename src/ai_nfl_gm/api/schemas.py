@@ -24,7 +24,10 @@ class TradeRequest(BaseModel):
     side_b: TradeSideIn
     current_season: int = Field(examples=[2026])
     discount_per_year: float | None = Field(
-        default=None, description="Future-pick discount; defaults to the sport config."
+        default=None,
+        gt=0,
+        le=1,
+        description="Future-pick discount per season out, in (0, 1]; defaults to the sport config.",
     )
 
 

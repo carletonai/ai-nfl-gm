@@ -30,11 +30,18 @@ def health() -> HealthResponse:
 def trade_evaluate(request: TradeRequest) -> TradeResponse:
     """Sum surplus on each side of a proposed trade.
 
-    Surplus numbers are supplied by the caller for now. Once the valuation engine ships,
-    this endpoint will look players and picks up by id instead.
+    Surplus numbers are supplied by the caller for now.
+
+    TODO(product): once the valuation engine ships, look players and picks up by id from
+    the surplus table instead of taking numbers in the request, and add the draft-board
+    endpoint (``GET /draft/board?season=``) the page reads.
     """
     sport = load_sport_config()
-    discount = request.discount_per_year or sport.future_pick_discount_per_year
+    discount = (
+        sport.future_pick_discount_per_year
+        if request.discount_per_year is None
+        else request.discount_per_year
+    )
 
     def to_side(side_in) -> TradeSide:  # noqa: ANN001
         return TradeSide(

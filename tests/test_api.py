@@ -36,3 +36,19 @@ def test_trade_evaluate() -> None:
     assert body["side_b_total_pct"] == 5.6
     assert body["currency_label"] == "% of cap"
     assert body["difference_pct"] < 0
+
+
+def test_trade_evaluate_rejects_out_of_range_discount() -> None:
+    payload = {
+        "side_a": {
+            "team": "A",
+            "assets": [{"kind": "pick", "label": "2028 1st", "surplus_pct": 10.0, "season": 2028}],
+        },
+        "side_b": {"team": "B", "assets": []},
+        "current_season": 2026,
+        "discount_per_year": 2.5,
+    }
+    assert client.post("/trade/evaluate", json=payload).status_code == 422
+    payload["discount_per_year"] = 0.5
+    body = client.post("/trade/evaluate", json=payload).json()
+    assert body["side_a_total_pct"] == 2.5  # 10 * 0.5 ** 2, an explicit discount is honoured
