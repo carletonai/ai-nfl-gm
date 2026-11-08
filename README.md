@@ -1,71 +1,54 @@
 # AI NFL GM
 
-A trade calculator and draft board for the NFL, built by the Carleton AI Society on free
-data. We price every player and draft pick in one number, **surplus value** (what a player
-produces minus what he costs against the salary cap), and use it to answer the three
-questions a general manager faces: what to offer in free agency, whether a trade is fair,
-and where a college prospect should go in the draft. The result goes live on
-[carletonai.com](https://carletonai.com).
+A Carleton AI Society project. We want to price every NFL player and draft pick in one
+number, **surplus value**: what a player produces minus what he costs against the salary cap.
+From that we build a trade calculator and a draft board for
+[carletonai.com](https://carletonai.com). All the data is free.
 
-> **Status (Nov 2026):** scaffolding only. The layout, tooling and interfaces are here;
-> the models are not. Building them is the project.
+We have not started building yet. For now the job is to get the data on your laptop and look
+around.
 
-## Setup
+## Get the data
 
-You need [uv](https://docs.astral.sh/uv/getting-started/installation/); it fetches the right
-Python for you.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) (it brings its own
+Python), then:
 
 ```bash
 git clone https://github.com/carletonai/ai-nfl-gm.git
 cd ai-nfl-gm
-make setup   # installs everything into .venv and sets up the pre-commit hooks
-make check   # lint + tests, the same as CI; if this passes you are ready
+uv run get_data.py   # about 20 MB into data/, takes a minute or two
+uv run jupyter lab   # start a notebook
 ```
 
-Everything runs through `uv run`, so there is no virtualenv to activate. On Windows without
-`make`, run `uv sync --all-extras`, `uv run pre-commit install` and `uv run pytest` instead.
-
-Then prove the data is real (paste into `uv run python`):
+In the notebook:
 
 ```python
-from ai_nfl_gm.data import nflverse
+import pandas as pd
 
-contracts = nflverse.load("contracts")  # downloads once, cached under data/raw/
+contracts = pd.read_parquet("data/contracts.parquet")
 contracts[["player", "position", "year_signed", "apy_cap_pct"]].head()
 ```
 
-## Pick a task
+## What's in `data/`
 
-The project is five workstreams, one per stage of the pipeline. Pick the one that matches
-what you want to learn and say so in `#ai-nfl-gm`.
+| File | What it is |
+| --- | --- |
+| `contracts` | Every contract Over The Cap tracks. `apy_cap_pct` is the yearly value as a share of the cap |
+| `players` | One row per player, with the IDs that join the other tables (`gsis_id`, `pfr_id`, ...) |
+| `draft_picks` | Every pick since 1980: team, slot, college, career value (`w_av`) |
+| `combine` | Combine results since 2000: 40 time, bench, vertical, ... |
+| `trades` | Trades since 2002 |
+| `player_stats` | Regular-season stats per player per season, 2011 to now |
 
-| Stream | You will build | Good if you like | Code |
-| --- | --- | --- | --- |
-| Data | clean per-position tables from nflverse and CollegeFootballData (CFBD) | pandas, data cleaning (best first stream) | `src/ai_nfl_gm/data/` |
-| Market model | a model of what the league pays a player | regression, scikit-learn | `src/ai_nfl_gm/market/` |
-| Prospects | college stats and combine results to NFL value and draft slot | feature engineering, ranking | `src/ai_nfl_gm/prospects/` |
-| Valuation engine | aging curves, surplus value, our own draft chart, trade value | statistics, modelling judgment | `src/ai_nfl_gm/valuation/` |
-| Product | the trade calculator and draft board | React, APIs | `src/ai_nfl_gm/api/`, `web/` |
+Two things that trip people up: each contract's year-by-year cap hits sit inside its
+`season_history` column, and `car_av` in `draft_picks` is empty, so use `w_av`.
 
-Then:
+## Questions
 
-1. Read your stream's section of [docs/workstreams.md](docs/workstreams.md): what to build
-   first and which files to open.
-2. Find a task. Unwritten functions raise `NotImplementedError` with a `TODO(<stream>)` note,
-   so `git grep -n "TODO(" src/` is the backlog.
-3. Branch, build, open a PR. [CONTRIBUTING.md](CONTRIBUTING.md) is one page.
+Ask in `#ai-nfl-gm` on the CAIS Discord, or ask Jeremy.
 
-## Where to ask
+---
 
-[`#ai-nfl-gm`](https://carletonai.com) on the CAIS Discord. Tag Jeremy for repo access or anything about scope.
-
-## Everything else
-
-The detail lives in [docs/](docs/): how the pipeline fits together, the data sources and
-their rules, the term plan, decisions, and a reading list. Read it when you need it, not
-before you start.
-
-Code is [MIT](LICENSE). Data comes from [nflverse](https://github.com/nflverse) (which packages
-Over The Cap and Pro Football Reference data) and
-[CollegeFootballData](https://collegefootballdata.com), under their own terms; see
-[docs/data-sources.md](docs/data-sources.md).
+Code is [MIT](LICENSE). The data comes from [nflverse](https://github.com/nflverse), which
+packages Over The Cap and Pro Football Reference data. Credit them, and keep the downloaded
+files out of git (`data/` is ignored already).
